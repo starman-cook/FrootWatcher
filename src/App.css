@@ -1,38 +1,115 @@
-.App {
-  text-align: center;
+body {
+  background: deeppink;
+}
+.BigBrother {
+  position: fixed;
+  /*top: 70px;*/
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  cursor: pointer;
+  overflow: hidden;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.BigBrother__form {
+  background: deeppink;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  overflow: hidden;
+}
+
+.BigBrother__text {
   color: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-shadow: 1px 1px 8px black;
+  user-select: none;
+}
+.BigBrother__text--error {
+  font-size: 13px;
+  color: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-shadow: 1px 1px 8px black;
+  user-select: none;
 }
 
-.App-link {
-  color: #61dafb;
+
+.BigBrother__merchant {
+  position: relative;
+  color: white;
+  text-shadow: 1px 1px 1px black;
+  padding: 0;
+  margin: 12px 0 0 0;
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+  z-index: 3;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Loader {
+  position: fixed;
+  width: 120px;
+  height: 120px;
+  opacity: 0.6;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  background: url(loader.gif)center no-repeat;
 }
+.BigBrother__btn--pushDown {
+  display: block;
+  margin-top: 50px;
+  cursor: pointer;
+}
+
+.BigBrotherInput {
+  position: relative;
+  padding: 10px;
+  z-index: 3;
+  margin: 4px auto ;
+  display: block;
+  border-radius: 10px;
+  background: floralwhite;
+  color: #4e4e4e;
+  text-align: center;
+  outline: none;
+}
+.BigBrotherInput--login {
+  width: 150px;
+}
+
+.BigBrotherInput--button {
+  border: 0;
+  border-radius: 5px;
+  background: black;
+  margin: 3px;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.BigBrotherInput--button--positioning {
+  position: fixed;
+  bottom: 3px;
+  right: 2px;
+}
+
+.BigBrother__image {
+  width: 100%;
+  height: 100vh;
+  transform: rotate(180deg);
+}
+
