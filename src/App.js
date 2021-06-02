@@ -31,6 +31,7 @@ function App() {
         merchant: ""
     })
     const [isStarted, setIsStarted] = useState(false)
+    const [loginError, setLoginError] = useState(null)
 
 
     /**
@@ -69,7 +70,7 @@ function App() {
             setError(false)
         } catch (err) {
             console.log(err)
-            setError(true)
+            setLoader(false)
         }
 
     }
@@ -125,6 +126,10 @@ function App() {
      * Логаут пользователя, удаляет id из localStorage
      **/
     const logOut = () => {
+        setError(null)
+        setLoader(false)
+        setIsStarted(false)
+        setInfoBB({merchant: ""})
         localStorage.clear()
         setUser(null)
     }
@@ -136,11 +141,13 @@ function App() {
         try {
             const response = await axios.post(apiURL + "/users/electron", inputLogin)
             localStorage.setItem("user", response.data.user._id)
+            setLoginError(null)
             setUser(response.data.user._id)
             await checkIfLast(response.data.user._id)
 
         } catch (e) {
             console.log(e)
+            setLoginError("Неправильный email или пароль!")
         }
     }
 
@@ -152,7 +159,7 @@ function App() {
     useEffect(() => {
         setUser(localStorage.getItem("user"))
         checkIfLast(user)
-    }, [])
+    }, [user])
     let main
 
     /**
@@ -182,6 +189,7 @@ function App() {
                 <form onSubmit={(event) => {submitHandler(event)}} className={"BigBrother__form"}>
                     <input required name={"workEmail"} onChange={(event) => {inputValue(event)}} placeholder={"work email"} className={"BigBrotherInput BigBrotherInput--login"} type={"text"} />
                     <input required name={"password"} onChange={(event) => {inputValue(event)}} placeholder={"password"} className={"BigBrotherInput BigBrotherInput--login"} type={"password"} />
+                    {loginError ? <p className={"BigBrother__text--loginError"}>{loginError}</p> : null}
                     <button className={"BigBrotherInput--button"} type={"submit"}>Login</button>
                 </form>
             </div>

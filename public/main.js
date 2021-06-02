@@ -27,7 +27,7 @@ function createWindow () {
      * путь к главному html
      * не ставлю проверку isDev, так как библиотеки слетают, лучше просто при package не забыть поменять и все))
      **/
-    // win.loadURL('http://localhost:3000')
+    // win.loadURL('http://localhost:3001')
     win.loadURL(path.join(__dirname, '../build/index.html'))
 
     /**

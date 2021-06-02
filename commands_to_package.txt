@@ -1,0 +1,3 @@
+
+npm run buid
+$ electron-packager D://IT/JavaScript/testingReactAndElectron/testingone FrootWatcher --platform=win32 --arch=x64
