@@ -10,8 +10,8 @@ const { desktopCapturer } = electron
  * Адресс для dev версии и рабочей
  * Не стал использовать isDev, так как эти библиотеки постояно устаревают
  **/
-// const apiURL = "http://localhost:8000";
-const apiURL = "http://162.55.54.115:8000";
+const apiURL = "http://localhost:8000";
+// const apiURL = "http://162.55.54.115:8000";
 
 function App() {
 

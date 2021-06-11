@@ -17,10 +17,7 @@
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
     "wait-on": "^5.3.0",
-    "web-vitals": "^1.1.2",
-    "electron-packager": "^15.2.0",
-    "electron": "^11.4.6",
-    "electron-builder": "^22.10.5"
+    "web-vitals": "^1.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -64,6 +61,8 @@
     ]
   },
   "devDependencies": {
-
+    "electron-packager": "^15.2.0",
+    "electron": "^11.4.6",
+    "electron-builder": "^22.10.5"
   }
 }
