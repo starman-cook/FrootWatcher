@@ -1,70 +1,128 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Getting Started with FrootWatcher app
 
 ## Available Scripts
 
-In the project directory, you can run:
-
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Starts react app
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### `npm run electron`
+Starts electron app
+**Note: Check the ways in public/main.js and src/App.js to be sure you are connected to the right server and to the right html**
 
-### `npm test`
+### `npm build`
+Builds final React app version
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### `electron-packager D://IT/JavaScript/testingReactAndElectron/testingone FrootWatcher --platform=win32 --arch=x64`
+Creates electron desktop app. Be sure you don't have node_modules in it. For MacOS change win32 to darwin. For MacOS you probably will need to do some more actions to make it stable.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## API configs
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Model
+```javascript
+const mongoose = require('mongoose');
+const idvalidator = require('mongoose-id-validator');
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+const Schema = mongoose.Schema;
 
-### `npm run eject`
+const BigBrotherSchema = new Schema({
+   user: {
+       type: Schema.Types.ObjectId,
+   },
+    startTime: String,
+    stopTime: String,
+    totalTime: String,
+    startScreen: String,
+    stopScreen: String,
+    merchant: String
+});
+BigBrotherSchema.plugin(idvalidator);
+const BigBrother = mongoose.model('BigBrother', BigBrotherSchema);
+module.exports = BigBrother;
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Routers:
+```javascript
+const express = require('express');
+const router = express.Router();
+const moment = require('moment')
+const BigBrother = require('./models/BigBrother');
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    router.get('/', async(req, res) => {
+        try {
+            const jobs = await BigBrother.find()
+            res.send(jobs)
+        } catch (err) {
+            res.status(400).send({ message: err });
+        }
+    })
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+    router.get('/:userId', async(req, res) => {
+        try {
+            const jobs = await BigBrother.find({user: req.params.userId}).populate("User")
+            res.send(jobs)
+        } catch (err) {
+            res.status(400).send({ message: err });
+        }
+    })
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    router.get('/:userId/lastJob', async(req, res) => {
+        try {
+            const lastJob = await BigBrother.findOne({user: req.params.userId, stopScreen: null})
+            if (lastJob) {
+                res.send(lastJob)
+            } else {
+                res.send({message: "ok"})
+            }
+        } catch (err) {
+            res.status(400).send({ message: err });
+        }
+    })
 
-## Learn More
+    router.delete("/:id", async (req, res) => {
+        try {
+            await BigBrother.findByIdAndRemove(req.param.id)
+            res.send({message: "ok"})
+        } catch(err) {
+            res.status(400).send({ message: err });
+        }
+    })
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    router.post('/', async (req, res) => {
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+        try {
 
-### Code Splitting
+            const lastJob = await BigBrother.findOne({user: req.body.user, stopScreen: null})
+            if (lastJob) {
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+                lastJob.stopScreen = req.body.image
+                const duration = moment.duration(moment().valueOf() - lastJob.startTime)
+                lastJob.totalTime = `${duration.hours()}:${duration.minutes()}:${duration.seconds()}`
+                lastJob.startTime = moment(lastJob.startTime, "x").format("DD-MM-YYYY_HH:mm:ss")
+                lastJob.stopTime = moment().format("DD-MM-YYYY_HH:mm:ss")
 
-### Analyzing the Bundle Size
+                lastJob.save({ validateBeforeSave: false });
+            }
+            else {
+                const bBrother = await new BigBrother()
+                bBrother.startScreen = req.body.image
+                bBrother.startTime = moment().valueOf()
+                bBrother.merchant = req.body.merchant
+                bBrother.user = req.body.user
+                bBrother.save({ validateBeforeSave: false });
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+            }
 
-### Making a Progressive Web App
+            res.send({message: "success"});
+        } catch (err) {
+            res.status(400).send({ message: "err" });
+        }
+    });
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+module.exports = router;
+```
 
-### Advanced Configuration
+## Additional info
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+If you need more details on Api side please take a look at the working project [on gitlab attractor school page](https://git.attractor-school.com/esdp_froot.kz/esdp_froot.kz).
